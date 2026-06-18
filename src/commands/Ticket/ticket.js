@@ -1,12 +1,26 @@
 import { getColor } from '../../config/bot.js';
 import { SlashCommandBuilder, PermissionFlagsBits, PermissionsBitField, ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } from 'discord.js';
-import { createEmbed, successEmbed, infoEmbed, warningEmbed } from '../../utils/embeds.js';
+import { createEmbed, successEmbed, infoEmbed, warningEmbed, errorEmbed } from '../../utils/embeds.js';
 import { getGuildConfig } from '../../services/guildConfig.js';
 import { InteractionHelper } from '../../utils/interactionHelper.js';
 import { logger } from '../../utils/logger.js';
 import { handleInteractionError } from '../../utils/errorHandler.js';
 
 import ticketConfig from './modules/ticket_dashboard.js';
+
+// Helper function to reply with user-friendly errors
+async function replyUserError(interaction, { message }) {
+    try {
+        const embed = errorEmbed("Error", message);
+        if (interaction.deferred || interaction.replied) {
+            return await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
+        } else {
+            return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+        }
+    } catch (error) {
+        logger.error('Failed to send error reply:', error);
+    }
+}
 
 export default {
     data: new SlashCommandBuilder()
@@ -111,7 +125,7 @@ export default {
                     guildId: interaction.guildId,
                     commandName: 'ticket'
                 });
-                return await replyUserError(interaction, { type: ErrorTypes.PERMISSION, message: 'You need the `Manage Channels` permission for this action.' });
+                return await replyUserError(interaction, { message: 'You need the `Manage Channels` permission for this action.' });
             }
 
             const subcommand = interaction.options.getSubcommand();
@@ -123,7 +137,7 @@ export default {
         if (subcommand === "setup") {
             const existingConfig = await getGuildConfig(client, interaction.guildId);
             if (existingConfig?.ticketPanelChannelId) {
-                return await replyUserError(interaction, { type: ErrorTypes.UNKNOWN, message: 'This server already has a ticket system set up (panel in <#${existingConfig.ticketPanelChannelId}>).\n\nOnly one ticket system is supported per server. Use \\`/ticket dashboard\\` to edit or update the existing setup, or select **Delete System** from the dashboard to remove it and start fresh.' });
+                return await replyUserError(interaction, { message: `This server already has a ticket system set up (panel in <#${existingConfig.ticketPanelChannelId}>).\n\nOnly one ticket system is supported per server. Use \`/ticket dashboard\` to edit or update the existing setup, or select **Delete System** from the dashboard to remove it and start fresh.` });
             }
 
             const panelChannel =
@@ -159,7 +173,18 @@ description: panelMessage,
                 });
 
                 if (client.db && interaction.guildId) {
-                    const currentConfig = existingConfig;
+                    const currentConfig = existingConfig || {
+                        guildId: interaction.guildId,
+                        ticketCategoryId: null,
+                        ticketClosedCategoryId: null,
+                        ticketStaffRoleId: null,
+                        ticketPanelChannelId: null,
+                        ticketPanelMessage: null,
+                        ticketButtonLabel: null,
+                        maxTicketsPerUser: 3,
+                        dmOnClose: true
+                    };
+                    
                     currentConfig.ticketCategoryId = categoryChannel ? categoryChannel.id : null;
                     currentConfig.ticketClosedCategoryId = closedCategoryChannel ? closedCategoryChannel.id : null;
                     currentConfig.ticketStaffRoleId = staffRole ? staffRole.id : null;
@@ -280,7 +305,7 @@ description: panelMessage,
                     commandName: 'ticket_setup'
                 });
                 if (interaction.deferred || interaction.replied) {
-                    await replyUserError(interaction, { type: ErrorTypes.UNKNOWN, message: 'Could not send the ticket panel or save configuration. Check the bot\'s permissions (especially the ability to send messages in the target channel) and database connection.' }).catch(err => {
+                    await replyUserError(interaction, { message: 'Could not send the ticket panel or save configuration. Check the bot\'s permissions (especially the ability to send messages in the target channel) and database connection.' }).catch(err => {
                         logger.error('Failed to send error reply', {
                             error: err.message,
                             guildId: interaction.guildId
