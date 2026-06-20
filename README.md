@@ -1,272 +1,259 @@
-# TitanBot - Ultimate Discord Bot
+# 🎮 Système de Jeu Discord - Guide Complet
 
-**TitanBot** is a powerful, feature-rich Discord bot designed to enhance your server experience with comprehensive moderation tools, engaging economy systems, utility features, and much more. Built with modern Discord.js v14 and PostgreSQL for optimal performance and data persistence.
+## 📋 Table des matières
+1. Installation
+2. Configuration
+3. Commandes disponibles
+4. Fonctionnalités
+5. Personnalisation
 
-[![Support Server](https://img.shields.io/badge/-Support%20Server-%235865F2?logo=discord&logoColor=white&style=flat-square&logoWidth=20)](https://discord.gg/8kJBYhTGW9)
-[![Discord.js](https://img.shields.io/npm/v/discord.js?style=flat-square&labelColor=%23202225&color=%23202225&logo=npm&logoColor=white&logoWidth=20)](https://www.npmjs.com/package/discord.js)
-![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-%23336791?logo=postgresql&logoColor=white&style=flat-square&logoWidth=20)
+---
 
-## Table of Contents
+## 🚀 Installation
 
-- [Features Overview](#features-overview)
-- [Quick Setup](#quick-setup)
-- [Manual Installation Steps](#manual-installation-steps)
-- [Support Server](https://discord.gg/QnWNz2dKCE)
-- [Required Bot Intents](#bot-intents)
-- [Contributing](#contributing)
+### 1️⃣ Prérequis
+- **Node.js 18+** ([Télécharger](https://nodejs.org/))
+- **Ton bot Discord** déjà créé
+- **Token du bot** Discord
 
-<a name="features-overview"></a>
-## Features Overview
-
-TitanBot offers a complete suite of tools for Discord server management and community engagement:
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### Moderation & Administration
-- **Mass Actions** - Bulk ban/kick capabilities
-- **User Notes** - Keep detailed moderation records
-- **Case Management** - View and track all mod actions
-
-### Economy System
-- **Shop & Inventory** - Buy and manage items
-- **Gambling** - Risk it for rewards
-- **Pay System** - Transfer money between users
-
-### Fun & Entertainment
-- **Random Facts** - Learn something new
-- **Wanted Poster** - Create fun wanted images
-- **Text Reversal** - Reverse any text
-
-### Advanced Ticket System
-- **Claim & Priority** - Staff ticket management
-- **Ticket Limits** - Prevent spam
-- **Transcript System** - Save ticket history
-
-### Server Stats
-- **Member Counter** - Live member count channels
-- **Voice Counters** - Track voice stats
-- **Dynamic Updates** - Real-time channel updates
-
-### Reaction Roles
-- **Role Assignment** - Self-assignable roles
-- **Emoji Selection** - Reaction-based system
-- **Multi-role Support** - Multiple role options
-
-</td>
-<td width="50%" valign="top">
-
-### Leveling & XP System
-- **XP Tracking** - Automatic message-based XP
-- **Level Roles** - Auto-assign roles by level
-- **Custom Configuration** - Personalize leveling
-
-### Giveaways & Events
-- **Multiple Winners** - Support multi-winner giveaways
-- **Auto Picking** - Automatic winner selection
-- **Reroll System** - Pick new winners if needed
-
-### Birthday System
-- **Birthday Tracking** - Never miss a birthday
-- **Auto Announcements** - Celebrate automatically
-- **Timezone Support** - Accurate worldwide tracking
-
-### Utility Tools
-- **Report System** - Report issues to staff
-- **Todo Lists** - Personal task management
-- **First Message** - Jump to channel's first message
-
-### Welcome System
-- **Welcome Messages** - Greet new members
-- **Auto Roles** - Assign roles on join
-- **Custom Embeds** - Personalized messages
-
-</td>
-</tr>
-</table>
-
-<a name="quick-setup"></a>
-## Quick Setup (Recommended for non-coders)
-
-### Video Tutorial
-For a detailed step-by-step setup guide, watch our comprehensive video tutorial:
-[**TitanBot Setup Tutorial**](https://www.youtube.com/@TouchDisc)
-
-## Docker Deployment (Recommended)
-
-TitanBot is fully containerized for easy deployment.
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/codebymitch/TitanBot.git
-   cd TitanBot
-   ```
-
-2. **Configure environment variables:**
-   Create a `.env` file from `.env.example` and fill in your bot details and PostgreSQL credentials.
-
-3. **Start the containers:**
-   ```bash
-   docker-compose up -d
-   ```
-
-This will start both the bot and a persistent PostgreSQL database.
-
-### Using GitHub Container Registry
-
-The bot is automatically published to GitHub Container Registry on every push to main.
+### 2️⃣ Installation des dépendances
 
 ```bash
-docker pull ghcr.io/codebymitch/titanbot:main
+npm install
 ```
 
-<a name="manual-installation-steps"></a>
-## Manual Installation Steps
+Cela installera :
+- `discord.js` - Librairie Discord
+- `better-sqlite3` - Base de données locale
 
-### Prerequisites
-- Node.js 18.0.0 or higher
-- PostgreSQL server (recommended) or memory storage fallback
-- Discord bot application with proper intents
+### 3️⃣ Configuration du Token
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/codebymitch/TitanBot.git
-   cd TitanBot
-   ```
+**Option 1 : Variable d'environnement (.env)**
 
-2. **Install Dependencies**
-   ```bash
-   npm install
-   ```
+Crée un fichier `.env` à la racine :
 
-3. **Configure Environment Variables**
-   ```bash
-   cp .env.example .env
-   ```
-   Edit `.env` with your configuration (only the following variables require configuration, leave remaining variables as default):
-   ```env
-   # Discord Bot Configuration
-   DISCORD_TOKEN=your_discord_bot_token_here
-   CLIENT_ID=your_discord_client_id_here
-   GUILD_ID=your_discord_guild_id_here
-
-   # PostgreSQL Configuration (Primary Database)
-   POSTGRES_URL=postgresql://postgres:yourpassword@localhost:5432/titanbot
-   POSTGRES_HOST=localhost
-   POSTGRES_PORT=5432
-   POSTGRES_DB=titanbot
-   POSTGRES_USER=postgres
-   POSTGRES_PASSWORD=yourpassword
-   ```
-
-   Production note:
-   - `NODE_ENV=production`
-   - `LOG_LEVEL=warn` for a clean production console (critical issues + startup status)
-   - `LOG_LEVEL=info` if you want more detailed operational logs
-   - If your chosen `PORT` is already used, TitanBot automatically tries the next port(s)
-
-   Environment options reference:
-   - `NODE_ENV`: `development`, `production`, `test` (any non-`production` value is treated as non-production)
-   - `LOG_LEVEL`: `error`, `warn`, `info`, `http`, `verbose`, `debug`, `silly`
-   - Accepted aliases for `LOG_LEVEL` in this bot: `warns`, `warning`, `warnings` → `warn`
-
-   Recommended production `.env` (easy mode + default mode):
-   ```env
-   NODE_ENV=production
-   LOG_LEVEL=warn
-   WEB_HOST=0.0.0.0
-   PORT=3000
-   PORT_RETRY_ATTEMPTS=5
-   ```
-   This gives clear startup/online status messages while keeping logs simple for non-technical operators.
-   If port `3000` is busy, the bot tries the next available ports automatically (up to `PORT_RETRY_ATTEMPTS`).
-
-### Running in multiple servers (optional)
-
-Most users run TitanBot on a **single server** with `GUILD_ID` set (default tutorial setup). If you want slash commands to work in **every server** the bot is invited to, opt in with:
-
-```env
-MULTI_GUILD=true
+```
+DISCORD_TOKEN=ton_token_ici
 ```
 
-Notes for multi-server mode:
-- `GUILD_ID` is not used for command registration when `MULTI_GUILD=true` (you can leave it set or remove it)
-- Global slash commands may take up to about an hour to propagate on first deploy
-- Each server still has **isolated** config, economy, tickets, leveling, and other data
-- In the [Discord Developer Portal](https://discord.com/developers/applications), ensure your bot is not restricted to a single guild if you plan to invite it elsewhere
-- Generate an OAuth2 invite URL from the [Discord Developer Portal](https://discord.com/developers/applications) (OAuth2 → URL Generator, scopes: `bot` and `applications.commands`)
+**Option 2 : Directement dans le code**
 
-4. **Setup PostgreSQL Database** (Optional but recommended)
-   ```bash
-   # Create database and user
-   createdb titanbot
-   createuser titanbot
-   psql -c "ALTER USER titanbot PASSWORD 'yourpassword';"
-   psql -c "GRANT ALL PRIVILEGES ON DATABASE titanbot TO titanbot;"
-   ```
+Modifie `bot-main.js` ligne 26 :
+```javascript
+const TOKEN = 'TON_TOKEN_ICI';
+```
 
-5. **Test Database Connection**
-   ```bash
-   npm run test-postgres
-   ```
+### 4️⃣ Lancer le bot
 
-6. **Start the Bot**
-   ```bash
-   npm start
-   ```
-<a name="bot-intents"></a>
+```bash
+npm start
+```
 
-## Required Bot Intents
-TitanBot requires the following Discord intents:
-- **Guilds**
-- **Guild Messages**
-- **Message Content**
-- **Guild Members**
-- **Guild Message Reactions**
-- **Guild Voice States**
-- **Direct Messages**
-- **Bot**
-- **Applications.commands**
+Ou en mode développement (redémarrage automatique) :
+```bash
+npm run dev
+```
 
-### Required Permissions
-- **View Channels**
-- **Send Messages**
-- **Embed Links**
-- **Attach Files**
-- **Read Message History**
-- **Manage Messages**
-- **Manage Channels**
-- **Manage Roles**
-- **Kick Members**
-- **Manage Messages**
-- **Ban Members**
-- **Moderate Members**
-- **Connect**
+---
 
-<a name="contributing"></a>
-## Contributing
+## ⚙️ Configuration
 
-We welcome contributions to TitanBot! Here's how you can help:
+### Modifier les gains d'XP et d'argent
 
-1. **Fork the repository**
-2. **Create a feature branch**
-3. **Make your changes**
-4. **Test thoroughly**
-5. **Submit a pull request**
+Édite `events.js` :
 
-### Development Guidelines
-- Follow existing code style
-- Add proper error handling
-- Include documentation for new features
-- Test with PostgreSQL and memory storage
+```javascript
+const CONFIG = {
+  XP_PER_MESSAGE: 10,        // XP par message (défaut: 10)
+  MONEY_PER_MESSAGE: 5,      // Argent par message (défaut: 5)
+  COOLDOWN_SECONDS: 30,      // Délai entre 2 gains (défaut: 30s)
+  BONUS_LONG_MESSAGE: 5,     // Bonus pour messages longs (défaut: 5)
+  BONUS_CONVERSATION: 3      // Bonus pour réponses (défaut: 3)
+};
+```
 
-## License
+### Modifier les rangs et leurs seuils
 
-TitanBot is released under the MIT License. See [LICENSE](LICENSE) for details.
+Édite `database.js` :
 
-## Thank You
+```javascript
+const RANKS = [
+  { name: 'Bronze', minXp: 0, emoji: '🥉' },
+  { name: 'Argent', minXp: 500, emoji: '🥈' },
+  { name: 'Or', minXp: 1500, emoji: '🥇' },
+  { name: 'Platine', minXp: 3000, emoji: '💎' },
+  // Ajoute tes rangs ici
+];
+```
 
-Thank you for choosing TitanBot for your Discord server! We're constantly working to improve and add new features based on community feedback.
+### Modifier les items de la boutique
 
-*Last updated: May 2026*
+Édite `shop.js` et modifie `DEFAULT_SHOP_ITEMS` :
+
+```javascript
+const DEFAULT_SHOP_ITEMS = [
+  { name: 'Nom', cost: 100, description: 'Description', emoji: '⭐' },
+  // Ajoute d'autres items
+];
+```
+
+---
+
+## 📚 Commandes Disponibles
+
+### 👤 Profil & Stats
+
+```
+!profil [@user]     → Voir tes stats ou celles de quelqu'un
+!leaderboard        → Voir le top 10 des joueurs
+!top                → Alias de leaderboard
+```
+
+### 🛍️ Boutique
+
+```
+!boutique           → Voir tous les items à vendre
+!shop               → Alias de boutique
+!acheter <numéro>   → Acheter un item (ex: !acheter 1)
+!buy <numéro>       → Alias d'acheter
+!inventaire         → Voir tes items achetés
+!inv                → Alias d'inventaire
+```
+
+### ❓ Aide
+
+```
+!aide               → Afficher ce message d'aide
+!help               → Alias d'aide
+```
+
+---
+
+## 🎯 Fonctionnalités
+
+### ✨ Système d'XP
+- ✅ **Gains automatiques** : +10 XP par message
+- ✅ **Bonus de longueur** : +5 XP si le message > 20 caractères
+- ✅ **Bonus conversation** : +3 XP si tu réponds à quelqu'un
+- ✅ **Cooldown** : 30 secondes min entre chaque gain (anti-spam)
+- ✅ **Notifications** : Message quand tu montes de rang
+
+### 💰 Système d'Argent
+- ✅ **Gains** : +5 💰 par message
+- ✅ **Dépenses** : Acheter des items dans la boutique
+- ✅ **Affichage** : Voir ton solde dans ton profil
+
+### 🏆 Système de Rangs
+Basé sur l'XP, déverrouille automatiquement les rangs :
+1. Bronze 🥉 - 0 XP
+2. Argent 🥈 - 500 XP
+3. Or 🥇 - 1500 XP
+4. Platine 💎 - 3000 XP
+5. Diamant ✨ - 5000 XP
+6. Légende 👑 - 10000 XP
+
+### 🛒 Système de Boutique
+- ✅ **Items variés** : Potions, boosters, badges, rôles
+- ✅ **Prix personnalisable** : Fixe pour chaque item
+- ✅ **Inventaire** : Conserve tes achats
+- ✅ **Ajout facile** : Ajoute des items avec la commande admin
+
+### 📊 Base de Données
+- Stockage local avec SQLite (fichier `game.db`)
+- Pas besoin de serveur externe
+- Dépendances minimales
+
+---
+
+## 🎨 Personnalisation
+
+### Ajouter un nouvel item à la boutique
+
+```javascript
+// Dans shop.js, ajoute une ligne dans DEFAULT_SHOP_ITEMS :
+{ name: 'Épée dorée', cost: 5000, description: 'Arme puissante', emoji: '⚔️' }
+```
+
+### Changer la couleur des embeds
+
+Trouve cette ligne dans les commandes et modifie le code couleur :
+```javascript
+.setColor('#00FF00')  // Vert
+```
+
+Codes couleurs populaires :
+- `#00FF00` - Vert
+- `#FF0000` - Rouge
+- `#FFD700` - Or
+- `#0099FF` - Bleu
+- `#FF00FF` - Magenta
+
+### Ajouter de nouveaux rangs
+
+1. Ajoute une entrée dans `RANKS` dans `database.js`
+2. Modifie `minXp` pour le seuil d'XP
+3. Change l'emoji si tu veux
+
+---
+
+## 📁 Structure des fichiers
+
+```
+projet/
+├── bot-main.js          # Fichier principal (à exécuter)
+├── database.js          # Gestion de la base de données
+├── shop.js              # Système de boutique
+├── events.js            # Gestion des événements (XP, argent)
+├── commands.js          # Toutes les commandes Discord
+├── game.db              # Base de données (créée automatiquement)
+├── package.json         # Dépendances npm
+└── .env                 # Configuration (optionnel)
+```
+
+---
+
+## 🐛 Dépannage
+
+### Le bot ne démarre pas
+```
+❌ Error: DISCORD_TOKEN is not defined
+```
+→ Ajoute ton token dans `.env` ou directement dans `bot-main.js`
+
+### Les commandes ne fonctionnent pas
+```
+❌ Vérifie que tu utilises le bon préfixe: !
+```
+→ Utilise `!` avant chaque commande (ex: `!profil`)
+
+### Les gains d'XP ne s'appliquent pas
+→ Vérifie que le bot a la permission de lire les messages
+
+### Base de données corrompue
+```
+Supprime le fichier game.db et redémarrage
+```
+→ La base se créera automatiquement à nouveau
+
+---
+
+## 🔧 Support et Améliorations
+
+Besoin d'aide ? Tu peux :
+- ✅ Modifier les paramètres dans les fichiers
+- ✅ Ajouter de nouveaux rangs ou items
+- ✅ Changer les gains d'XP
+- ✅ Personnaliser les couleurs et messages
+
+---
+
+## 📝 Notes
+
+- Les données sont stockées localement dans `game.db`
+- Chaque serveur aura sa propre base de données
+- Les backups ne se font pas automatiquement
+- Les données ne sont jamais supprimées (les anciens comptes restent)
+
+---
+
+**Bon jeu ! 🎮**
